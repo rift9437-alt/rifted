@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#05050a"/><stop offset="100%" stop-color="#12122a"/></linearGradient></defs>
+  <rect width="400" height="225" fill="url(#bg)"/>
+  <rect x="30" y="90" width="340" height="5" rx="2" fill="#f59e0b" opacity="0.8"/>
+  <text x="200" y="130" text-anchor="middle" fill="#f1f5f9" font-family="system-ui" font-size="22" font-weight="700">OVERDRIVE</text>
+  <text x="200" y="155" text-anchor="middle" fill="#94a3b8" font-family="system-ui" font-size="12">Racing</text>
+</svg>

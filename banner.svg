@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400">
+  <defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#05050a"/><stop offset="50%" stop-color="#0f0a1a"/><stop offset="100%" stop-color="#0a0a18"/></linearGradient></defs>
+  <rect width="1200" height="400" fill="url(#bg)"/>
+  <rect x="100" y="180" width="1000" height="4" rx="2" fill="#ff3b4a" opacity="0.7"/>
+  <text x="600" y="230" text-anchor="middle" fill="#f1f5f9" font-family="system-ui" font-size="48" font-weight="700">CITY OF CRIME</text>
+  <text x="600" y="270" text-anchor="middle" fill="#94a3b8" font-family="system-ui" font-size="16">Open World · Riftted Realities</text>
+</svg>

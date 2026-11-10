@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riftted Realities</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#05050a;--bg2:#0c0c14;--card:#11111b;--elevated:#161622;--hover:#1c1c2a;
+      --purple:#a855f7;--purple-dim:#7c3aed;--blue:#22d3ee;
+      --text:#f1f5f9;--text2:#94a3b8;--muted:#64748b;--border:#1e1e2e;
+      --nav-h:64px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}img{max-width:100%;display:block}
+
+    .nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(5,5,10,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center}
+    .nav-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.1rem;flex-shrink:0}
+    .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(168,85,247,.35)}
+    .nav-links{display:flex;gap:.25rem}
+    .nav-link{padding:.5rem .9rem;font-size:.9rem;font-weight:500;color:var(--text2);border-radius:6px;transition:.15s}
+    .nav-link:hover{color:var(--text);background:var(--hover)}
+    .nav-link.active{color:var(--text);background:rgba(168,85,247,.12)}
+    .nav-actions{display:flex;align-items:center;gap:.5rem}
+    .search-wrap{position:relative}
+    .search-wrap input{width:180px;padding:.5rem .9rem .5rem 2.1rem;background:var(--bg2);border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:.875rem;transition:.25s}
+    .search-wrap input:focus{outline:none;border-color:var(--purple);width:240px;box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+    .search-wrap span{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem 1.3rem;font-size:.9rem;font-weight:500;border-radius:8px;transition:.2s;white-space:nowrap}
+    .btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple-dim));color:#fff;box-shadow:0 0 18px rgba(168,85,247,.3)}
+    .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+    .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn-secondary:hover{border-color:var(--blue);color:var(--blue)}
+    .btn-ghost{color:var(--text2);padding:.45rem .85rem}
+    .btn-ghost:hover{color:var(--text);background:var(--hover)}
+    .btn-sm{padding:.4rem .85rem;font-size:.85rem}
+    .btn-lg{padding:.85rem 1.7rem;font-size:1rem}
+    .menu-btn{display:none;width:40px;height:40px;align-items:center;justify-content:center;background:var(--bg2);border-radius:6px;color:var(--text)}
+    .mobile-nav{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--bg);z-index:99;padding:1.5rem;flex-direction:column;gap:.4rem}
+    .mobile-nav.open{display:flex}
+    .mobile-nav .nav-link{padding:.9rem 1rem;font-size:1.05rem;border-radius:8px}
+
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 1.5rem}
+    .section{padding:2.5rem 0}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem}
+    .section-title{font-size:1.4rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
+
+    .hero{position:relative;height:clamp(340px,50vh,480px);border-radius:20px;overflow:hidden;margin-top:1.75rem;background:var(--bg2);border:1px solid var(--border)}
+    .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+    .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,5,10,.92) 0%,rgba(5,5,10,.6) 45%,rgba(5,5,10,.35) 100%)}
+    .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:2.5rem;max-width:580px}
+    .hero-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .7rem;margin-bottom:.9rem;width:fit-content;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.35);border-radius:999px;font-size:.72rem;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.04em}
+    .hero-title{font-size:clamp(1.6rem,3.6vw,2.5rem);font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+    .hero-desc{color:var(--text2);font-size:1rem;margin-bottom:1.4rem;line-height:1.55;max-width:460px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:.85rem}
+
+    .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.4rem}
+    .scroll-row{display:flex;gap:1.3rem;overflow-x:auto;padding-bottom:.75rem;scroll-snap-type:x mandatory}
+    .scroll-row .game-card{min-width:250px;max-width:270px;flex-shrink:0;scroll-snap-align:start}
+    .game-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.25s;cursor:pointer;display:flex;flex-direction:column;height:100%}
+    .game-card:hover{transform:translateY(-4px);border-color:rgba(168,85,247,.4);box-shadow:0 12px 32px rgba(0,0,0,.45),0 0 24px rgba(168,85,247,.12)}
+    .game-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg2)}
+    .game-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .game-card:hover .game-thumb img{transform:scale(1.06)}
+    .badges{position:absolute;top:.55rem;left:.55rem;display:flex;gap:.3rem;flex-wrap:wrap}
+    .badge{padding:.18rem .5rem;font-size:.68rem;font-weight:600;border-radius:5px;text-transform:uppercase;letter-spacing:.03em}
+    .badge-new{background:var(--blue);color:#0a0a12}
+    .badge-featured{background:var(--purple);color:#fff}
+    .badge-status{background:rgba(255,255,255,.12);color:var(--text2)}
+    .game-body{padding:.95rem;display:flex;flex-direction:column;flex:1;gap:.3rem}
+    .game-genre{font-size:.72rem;color:var(--blue);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+    .game-title{font-size:1.02rem;font-weight:600}
+    .game-desc{font-size:.84rem;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+    .game-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.5rem;padding-top:.55rem;border-top:1px solid var(--border)}
+    .game-date{font-size:.72rem;color:var(--muted)}
+    .game-play{padding:.3rem .7rem;font-size:.78rem;font-weight:500;background:rgba(168,85,247,.12);color:var(--purple);border-radius:5px;transition:.15s}
+    .game-card:hover .game-play{background:var(--purple);color:#fff}
+
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.9rem}
+    .cat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.3rem .8rem;text-align:center;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+    .cat-card:hover{border-color:var(--purple);background:rgba(168,85,247,.08);transform:translateY(-2px)}
+    .cat-icon{font-size:1.6rem}.cat-name{font-size:.88rem;font-weight:500}
+
+    .empty{text-align:center;padding:3rem 1.5rem;color:var(--text2)}
+    .empty .icon{font-size:2.8rem;margin-bottom:.8rem;opacity:.55}
+    .empty h3{color:var(--text);margin-bottom:.35rem}
+    .page-placeholder{min-height:calc(100vh - var(--nav-h) - 100px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem}
+    .page-placeholder .icon{font-size:3.2rem;margin-bottom:1rem;opacity:.5}
+    .page-placeholder p{color:var(--text2);max-width:400px;margin:.6rem 0 1.5rem}
+
+    /* Game detail */
+    .detail-banner{width:100%;aspect-ratio:21/9;object-fit:cover;border-radius:16px;background:var(--card);margin-top:1.5rem}
+    .detail-body{padding:1.5rem 0 3rem}
+    .detail-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;font-size:.85rem;color:var(--text2)}
+    .detail-meta span{padding:.25rem .6rem;background:var(--elevated);border-radius:6px}
+    .detail-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.5rem}
+
+    /* Player overlay */
+    .player-overlay{position:fixed;inset:0;background:#05050a;z-index:300;display:none;flex-direction:column}
+    .player-overlay.open{display:flex}
+    .player-bar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0}
+    .player-title{font-weight:600;font-size:.95rem}
+    .player-controls{display:flex;gap:.5rem}
+    .player-frame-wrap{flex:1;position:relative;background:#000}
+    .player-frame-wrap iframe{width:100%;height:100%;border:none}
+    .player-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:var(--bg);z-index:2}
+    .player-loading.hidden{display:none}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .player-error{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;background:var(--bg);text-align:center;padding:2rem;z-index:3}
+    .player-error.show{display:flex}
+
+    .footer{border-top:1px solid var(--border);padding:2rem 0;margin-top:2.5rem;text-align:center;color:var(--muted);font-size:.85rem}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c1c2a;color:var(--text);padding:.7rem 1.3rem;border-radius:10px;border:1px solid #2a2a3a;font-size:.88rem;z-index:500;transition:.3s;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    .loading{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:.4s}
+    .loading.hidden{opacity:0;visibility:hidden;pointer-events:none}
+
+    @media(max-width:900px){.nav-links{display:none}.menu-btn{display:flex}.search-wrap input{width:140px}.search-wrap input:focus{width:170px}}
+    @media(max-width:640px){.search-wrap{display:none}.hero{height:clamp(280px,46vh,380px);border-radius:14px}.hero-content{padding:1.4rem}.game-grid{grid-template-columns:1fr 1fr;gap:.8rem}.scroll-row .game-card{min-width:210px;max-width:230px}.section-header{flex-direction:column;align-items:flex-start}}
+  
+/* ===== ADMIN PORTAL ===== */
+.admin-root{min-height:100vh;display:flex;background:#07070c;color:#e8eef8;font-family:Inter,system-ui,sans-serif}
+.admin-side{width:240px;flex-shrink:0;background:#0c0c14;border-right:1px solid #1e1e2e;display:flex;flex-direction:column;padding:1rem 0}
+.admin-brand{padding:0 1.2rem 1.2rem;font-weight:700;font-size:0.95rem;letter-spacing:0.04em;color:#a855f7;display:flex;align-items:center;gap:0.5rem}
+.admin-brand span{font-size:0.7rem;color:#64748b;font-weight:500;display:block}
+.admin-nav a{display:block;padding:0.65rem 1.2rem;color:#94a3b8;font-size:0.9rem;font-weight:500;border-left:3px solid transparent;transition:0.15s}
+.admin-nav a:hover{color:#f1f5f9;background:rgba(168,85,247,0.06)}
+.admin-nav a.active{color:#f1f5f9;background:rgba(168,85,247,0.12);border-left-color:#a855f7}
+.admin-side-foot{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid #1e1e2e;font-size:0.8rem;color:#64748b}
+.admin-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.admin-top{height:56px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;background:rgba(12,12,20,0.8)}
+.admin-content{flex:1;padding:1.5rem;overflow:auto}
+.admin-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.admin-card{background:#11111b;border:1px solid #1e1e2e;border-radius:12px;padding:1.1rem}
+.admin-card .n{font-size:1.6rem;font-weight:700;color:#f1f5f9}
+.admin-card .l{font-size:0.75rem;color:#64748b;margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.04em}
+.admin-table{width:100%;border-collapse:collapse;font-size:0.88rem}
+.admin-table th{text-align:left;padding:0.7rem 0.8rem;color:#64748b;font-weight:500;border-bottom:1px solid #1e1e2e}
+.admin-table td{padding:0.75rem 0.8rem;border-bottom:1px solid #161622}
+.admin-table tr:hover td{background:rgba(168,85,247,0.04)}
+.badge-st{display:inline-block;padding:0.15rem 0.5rem;border-radius:999px;font-size:0.7rem;font-weight:600;text-transform:uppercase}
+.badge-pending{background:rgba(251,191,36,0.15);color:#fbbf24}
+.badge-under_review{background:rgba(34,211,238,0.15);color:#22d3ee}
+.badge-approved{background:rgba(52,211,153,0.15);color:#34d399}
+.badge-rejected{background:rgba(248,113,113,0.15);color:#f87171}
+.badge-completed{background:rgba(168,85,247,0.15);color:#c084fc}
+.admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#12101e,#05050a)}
+.admin-login-box{width:min(400px,92vw);background:#11111b;border:1px solid #1e1e2e;border-radius:16px;padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.admin-login-box h1{font-size:1.25rem;margin-bottom:0.3rem}
+.admin-login-box p{color:#64748b;font-size:0.85rem;margin-bottom:1.5rem}
+.admin-login-box label{display:block;font-size:0.8rem;color:#94a3b8;margin-bottom:0.35rem}
+.admin-login-box input{width:100%;padding:0.7rem 0.9rem;background:#0c0c14;border:1px solid #1e1e2e;border-radius:8px;color:#f1f5f9;margin-bottom:1rem;font-size:0.95rem}
+.admin-login-box input:focus{outline:none;border-color:#a855f7}
+.admin-err{color:#f87171;font-size:0.85rem;margin-bottom:0.8rem;display:none}
+.admin-btn{width:100%;padding:0.8rem;background:linear-gradient(135deg,#a855f7,#7c3aed);border:none;border-radius:8px;color:#fff;font-weight:600;cursor:pointer}
+.admin-btn:hover{filter:brightness(1.08)}
+.admin-panel{background:#11111b;border:1px solid #1e1e2e;border-radius:12px;padding:1.2rem;margin-bottom:1rem}
+.admin-panel h3{margin-bottom:0.8rem;font-size:1rem}
+.admin-actions{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem}
+.admin-actions button,.admin-actions select{padding:0.45rem 0.8rem;border-radius:6px;border:1px solid #1e1e2e;background:#0c0c14;color:#e8eef8;font-size:0.82rem;cursor:pointer}
+.admin-actions button.primary{background:#a855f7;border-color:#a855f7;color:#fff}
+.admin-note{background:#0c0c14;border:1px solid #1e1e2e;border-radius:8px;padding:0.7rem;margin-top:0.5rem;font-size:0.85rem;color:#94a3b8}
+textarea.admin-ta{width:100%;min-height:80px;background:#0c0c14;border:1px solid #1e1e2e;border-radius:8px;color:#f1f5f9;padding:0.7rem;font-family:inherit;margin-top:0.5rem}
+@media(max-width:800px){.admin-side{display:none}.admin-content{padding:1rem}}
+
+  
+/* Account modals */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:400;display:none;align-items:center;justify-content:center;padding:1rem}
+.auth-overlay.open{display:flex}
+.auth-modal{width:min(420px,100%);background:#11111b;border:1px solid #1e1e2e;border-radius:16px;padding:1.6rem;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.auth-modal h2{font-size:1.25rem;margin-bottom:.3rem}
+.auth-modal .sub{color:#94a3b8;font-size:.85rem;margin-bottom:1.2rem}
+.auth-modal label{display:block;font-size:.8rem;color:#94a3b8;margin-bottom:.3rem}
+.auth-field{position:relative;margin-bottom:.9rem}
+.auth-field input{width:100%;padding:.7rem .9rem;background:#0c0c14;border:1px solid #1e1e2e;border-radius:8px;color:#f1f5f9;font-size:.95rem}
+.auth-field input:focus{outline:none;border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+.auth-toggle{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748b;font-size:.8rem;cursor:pointer}
+.auth-err{color:#f87171;font-size:.85rem;margin-bottom:.7rem;display:none}
+.auth-actions{display:flex;gap:.6rem;margin-top:1rem}
+.auth-actions .btn{flex:1}
+.auth-switch{text-align:center;margin-top:1rem;font-size:.85rem;color:#94a3b8}
+.auth-switch a{color:#a855f7;cursor:pointer}
+.nav-user{display:flex;align-items:center;gap:.4rem;position:relative}
+.nav-user-btn{display:flex;align-items:center;gap:.4rem;padding:.4rem .75rem;border-radius:8px;background:rgba(168,85,247,.12);color:#e9d5ff;font-size:.85rem;font-weight:500;cursor:pointer;border:1px solid rgba(168,85,247,.25)}
+.nav-user-menu{position:absolute;top:110%;right:0;background:#11111b;border:1px solid #1e1e2e;border-radius:10px;min-width:160px;padding:.4rem;display:none;z-index:50;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+.nav-user-menu.open{display:block}
+.nav-user-menu button,.nav-user-menu a{display:block;width:100%;text-align:left;padding:.55rem .75rem;border-radius:6px;color:#e2e8f0;font-size:.85rem;background:none;border:none;cursor:pointer}
+.nav-user-menu button:hover,.nav-user-menu a:hover{background:rgba(168,85,247,.12)}
+
+  
+/* Profile */
+.profile-wrap{max-width:900px;margin:0 auto;padding:1.5rem 0 3rem}
+.profile-hero{display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-top:1.25rem}
+.profile-avatar{width:96px;height:96px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:rgba(168,85,247,.15);border:2px solid rgba(168,85,247,.35);flex-shrink:0}
+.profile-meta h1{font-size:1.6rem;margin-bottom:.2rem}
+.profile-meta .uname{color:var(--text2);font-size:.9rem;margin-bottom:.6rem}
+.profile-bio{color:var(--text2);line-height:1.55;max-width:520px}
+.profile-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.8rem;margin:1.25rem 0}
+.profile-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.9rem}
+.profile-stat .n{font-size:1.2rem;font-weight:700}
+.profile-stat .l{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.profile-edit{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-top:1rem}
+.profile-edit label{display:block;font-size:.8rem;color:var(--text2);margin:.7rem 0 .3rem}
+.profile-edit input,.profile-edit textarea,.profile-edit select{width:100%;padding:.65rem .8rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit}
+.profile-edit textarea{min-height:90px;resize:vertical}
+.avatar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:.5rem;margin-top:.5rem}
+.avatar-opt{aspect-ratio:1;border-radius:12px;border:2px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;cursor:pointer;transition:.15s}
+.avatar-opt:hover{border-color:var(--purple)}
+.avatar-opt.selected{border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+.profile-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.profile-private{text-align:center;padding:3rem 1rem;color:var(--text2)}
+.color-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.4rem}
+.color-swatch{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.color-swatch.selected{border-color:#fff;box-shadow:0 0 0 2px rgba(168,85,247,.5)}
+
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading"><div class="spinner"></div><p style="color:var(--text2);font-size:.9rem">Loading Riftted Realities…</p></div>
+
+  <header class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="/" class="logo" data-page="home"><div class="logo-mark">R</div><span>Riftted Realities</span></a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link active" data-page="home">Home</a>
+        <a href="/discover" class="nav-link" data-page="discover">Discover</a>
+        <a href="/library" class="nav-link" data-page="library">My Library</a>
+        <a href="/recent" class="nav-link" data-page="recent">Recently Played</a>
+        <a href="/profile" class="nav-link" data-page="profile">Profile</a>
+        <a href="/settings" class="nav-link" data-page="settings">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="search-wrap"><span>🔍</span><input type="search" id="search" placeholder="Search games…" /></div>
+        <div id="nav-auth-area">
+          <button class="btn btn-ghost btn-sm" type="button" id="btn-login">Log in</button>
+          <button class="btn btn-primary btn-sm" type="button" id="btn-signup">Sign up</button>
+        </div>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="/" class="nav-link" data-page="home">Home</a>
+    <a href="/discover" class="nav-link" data-page="discover">Discover</a>
+    <a href="/library" class="nav-link" data-page="library">My Library</a>
+    <a href="/recent" class="nav-link" data-page="recent">Recently Played</a>
+    <a href="/profile" class="nav-link" data-page="profile">Profile</a>
+    <a href="/settings" class="nav-link" data-page="settings">Settings</a>
+  </div>
+
+  <main id="app"></main>
+
+  <!-- Game player -->
+  <div class="player-overlay" id="player">
+    <div class="player-bar">
+      <div class="player-title" id="playerTitle">Game</div>
+      <div class="player-controls">
+        <button class="btn btn-ghost btn-sm" id="btnFullscreen">Fullscreen</button>
+        <button class="btn btn-secondary btn-sm" id="btnExit">Exit Game</button>
+      </div>
+    </div>
+    <div class="player-frame-wrap">
+      <div class="player-loading" id="playerLoading"><div class="spinner"></div><p style="color:var(--text2)">Loading game…</p></div>
+      <div class="player-error" id="playerError"><div style="font-size:2.5rem">⚠️</div><h3>Couldn’t load game</h3><p style="color:var(--text2);max-width:360px">The game failed to load. It may still be in development or the files are missing.</p><button class="btn btn-primary" id="btnErrorExit">Back to library</button></div>
+      <iframe id="gameFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <footer class="footer" id="mainFooter"><div class="container"><p>© 2025 Riftted Realities · Step 2 · Game library & launcher</p></div></footer>
+  
+  <!-- Auth modals -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-modal" id="auth-modal">
+      <h2 id="auth-title">Sign in</h2>
+      <p class="sub" id="auth-sub">Welcome back to Riftted Realities</p>
+      <div class="auth-err" id="auth-err"></div>
+      <div id="auth-fields"></div>
+      <div class="auth-actions">
+        <button class="btn btn-secondary" type="button" id="auth-cancel">Cancel</button>
+        <button class="btn btn-primary" type="button" id="auth-submit">Continue</button>
+      </div>
+      <div class="auth-switch" id="auth-switch"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ========== REGISTRY ==========
+    const GAMES = [
+      {
+        id:'city-of-crime', title:'City of Crime',
+        short:'Explore a huge connected modern city, drive vehicles and experience open-world crime.',
+        desc:'Explore a huge connected modern city, drive vehicles, explore different environments and experience an open-world crime game. Walk the streets, enter vehicles, and roam across multiple districts.',
+        genre:'Open-world / Action / 3D', thumb:'/games/city-of-crime/thumb.svg', banner:'/games/city-of-crime/banner.svg',
+        url:'/games/city-of-crime/index.html', status:'available', version:'0.5.0', featured:true, published:true, date:'2025-11-01'
+      },
+      {
+        id:'starfall', title:'Starfall',
+        short:'Pilot spacecraft through dangerous space zones, fight and complete missions.',
+        desc:'A space-piloting game where players control spacecraft, explore dangerous space zones, fight opponents and complete missions. Fly freely with basic combat and wave objectives.',
+        genre:'Space Combat / Simulation', thumb:'/games/starfall/thumb.svg', banner:'/games/starfall/banner.svg',
+        url:'/games/starfall/index.html', status:'available', version:'0.1.0', featured:true, published:true, date:'2025-11-08'
+      },
+      {
+        id:'relicbound', title:'Relicbound',
+        short:'Explore dungeons, defeat enemies, collect weapons and discover relics.',
+        desc:'An action dungeon crawler. Explore rooms, defeat enemies, collect weapons and relics, and push deeper into the dungeon.',
+        genre:'Roguelike / Fantasy', thumb:'/games/relicbound/thumb.svg', banner:'/games/relicbound/banner.svg',
+        url:'/games/relicbound/index.html', status:'available', version:'0.1.0', featured:false, published:true, date:'2025-11-09'
+      },
+      {
+        id:'overdrive', title:'Overdrive',
+        short:'Race across neon tracks, beat times and unlock futuristic vehicles.',
+        desc:'A futuristic racing game. Accelerate, steer, hit checkpoints, chase the best lap time across neon tracks.',
+        genre:'Racing / Arcade', thumb:'/games/overdrive/thumb.svg', banner:'/games/overdrive/banner.svg',
+        url:'/games/overdrive/index.html', status:'available', version:'0.1.0', featured:true, published:true, date:'2025-11-10'
+      }
+    ];
+
+    // localStorage helpers (future → API / Neon)
+    const LS = {
+      get(k,d){try{return JSON.parse(localStorage.getItem('rr_'+k))??d;}catch{return d;}},
+      set(k,v){localStorage.setItem('rr_'+k,JSON.stringify(v));}
+    };
+    function trackPlay(id){
+      const recent=LS.get('recent',[]);
+      const filtered=recent.filter(x=>x.id!==id);
+      filtered.unshift({id,at:Date.now()});
+      LS.set('recent',filtered.slice(0,20));
+      const counts=LS.get('counts',{});
+      counts[id]=(counts[id]||0)+1;
+      LS.set('counts',counts);
+    }
+    function toggleFav(id){
+      const favs=LS.get('favs',[]);
+      const i=favs.indexOf(id);
+      if(i>=0)favs.splice(i,1);else favs.push(id);
+      LS.set('favs',favs);
+      return favs.includes(id);
+    }
+    function isFav(id){return LS.get('favs',[]).includes(id);}
+
+    function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+    function formatDate(iso){try{return new Date(iso).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}catch{return iso;}}
+
+    function cardHTML(g){
+      const badges=[];
+      if(g.featured)badges.push('<span class="badge badge-featured">Featured</span>');
+      if(g.status!=='available')badges.push(`<span class="badge badge-status">${g.status}</span>`);
+      return `<article class="game-card" data-id="${g.id}">
+        <div class="game-thumb"><img src="${g.thumb}" alt="${g.title}" loading="lazy"/><div class="badges">${badges.join('')}</div></div>
+        <div class="game-body">
+          <div class="game-genre">${g.genre}</div>
+          <h3 class="game-title">${g.title}</h3>
+          <p class="game-desc">${g.short}</p>
+          <div class="game-footer"><span class="game-date">${formatDate(g.date)}</span><span class="game-play">Play</span></div>
+        </div>
+      </article>`;
+    }
+
+    // ========== PLAYER ==========
+    function launchGame(g){
+      if(g.status!=='available'){toast(g.title+' is '+g.status.replace('-',' '));return;}
+      trackPlay(g.id);
+      const ov=document.getElementById('player');
+      const frame=document.getElementById('gameFrame');
+      const loading=document.getElementById('playerLoading');
+      const err=document.getElementById('playerError');
+      document.getElementById('playerTitle').textContent=g.title;
+      loading.classList.remove('hidden');
+      err.classList.remove('show');
+      frame.src='about:blank';
+      ov.classList.add('open');
+      document.getElementById('mainNav').style.display='none';
+      document.getElementById('mainFooter').style.display='none';
+      document.body.style.overflow='hidden';
+
+      setTimeout(()=>{
+        frame.onload=()=>{loading.classList.add('hidden');};
+        frame.onerror=()=>{loading.classList.add('hidden');err.classList.add('show');};
+        frame.src=g.url;
+        // fallback timeout
+        setTimeout(()=>{
+          if(!loading.classList.contains('hidden')){
+            // still loading — leave it, game may be heavy
+          }
+        },8000);
+      },200);
+    }
+    function exitGame(){
+      const ov=document.getElementById('player');
+      const frame=document.getElementById('gameFrame');
+      frame.src='about:blank';
+      ov.classList.remove('open');
+      document.getElementById('mainNav').style.display='';
+      document.getElementById('mainFooter').style.display='';
+      document.body.style.overflow='';
+      if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+    }
+    document.getElementById('btnExit').onclick=exitGame;
+    document.getElementById('btnErrorExit').onclick=exitGame;
+    document.getElementById('btnFullscreen').onclick=()=>{
+      const wrap=document.querySelector('.player-frame-wrap');
+      if(!document.fullscreenElement)wrap.requestFullscreen?.();else document.exitFullscreen?.();
+    };
+
+    // ========== PAGES ==========
+    function renderHome(){
+      const featured=GAMES.filter(g=>g.featured);
+      const hero=featured[0]||GAMES[0];
+      const recentIds=LS.get('recent',[]).map(x=>x.id);
+      const continueGames=recentIds.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean).slice(0,4);
+      return `
+        <div class="container">
+          <section class="hero">
+            <div class="hero-bg" style="background-image:url('${hero.banner}')"></div>
+            <div class="hero-content">
+              <div class="hero-badge">★ Featured</div>
+              <h1 class="hero-title">${hero.title}</h1>
+              <p class="hero-desc">${hero.short}</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary btn-lg" data-launch="${hero.id}">▶ Play Now</button>
+                <button class="btn btn-secondary btn-lg" data-detail="${hero.id}">Details</button>
+              </div>
+            </div>
+          </section>
+          <section class="section">
+            <div class="section-header"><h2 class="section-title">🔥 All Games</h2><a href="/discover" class="btn btn-ghost" data-page="discover">Discover →</a></div>
+            <div class="game-grid">${GAMES.map(cardHTML).join('')}</div>
+          </section>
+          <section class="section">
+            <div class="section-header"><h2 class="section-title">▶️ Continue Playing</h2></div>
+            ${continueGames.length?`<div class="scroll-row">${continueGames.map(cardHTML).join('')}</div>`:`
+            <div class="empty"><div class="icon">🕹️</div><h3>No games in progress</h3><p>Play a game and it will show up here.</p></div>`}
+          </section>
+          <section class="section">
+            <div class="section-header"><h2 class="section-title">📂 Genres</h2></div>
+            <div class="cat-grid">
+              ${['Action','Adventure','Racing','Roguelike','Space','Open-world','Simulation'].map(c=>`
+                <div class="cat-card" data-genre="${c}"><div class="cat-icon">🎮</div><div class="cat-name">${c}</div></div>`).join('')}
+            </div>
+          </section>
+        </div>`;
+    }
+
+    function renderDiscover(filterGenre=null,q=''){
+      let list=[...GAMES];
+      if(filterGenre)list=list.filter(g=>g.genre.toLowerCase().includes(filterGenre.toLowerCase()));
+      if(q){const s=q.toLowerCase();list=list.filter(g=>g.title.toLowerCase().includes(s)||g.short.toLowerCase().includes(s)||g.genre.toLowerCase().includes(s));}
+      const genres=['All','Action','Racing','Roguelike','Space','Open-world'];
+      return `
+        <div class="container">
+          <section class="section">
+            <div class="section-header"><h2 class="section-title">🔍 Discover</h2></div>
+            <div style="display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.4rem" id="genreFilters">
+              ${genres.map(g=>`<button class="btn btn-sm ${(!filterGenre&&g==='All')||filterGenre===g?'btn-primary':'btn-secondary'}" data-genre="${g}">${g}</button>`).join('')}
+            </div>
+            <div class="game-grid">${list.length?list.map(cardHTML).join(''):`<div class="empty" style="grid-column:1/-1"><div class="icon">🎮</div><h3>No games found</h3></div>`}</div>
+          </section>
+        </div>`;
+    }
+
+    function renderDetail(g){
+      const fav=isFav(g.id);
+      return `
+        <div class="container">
+          <img class="detail-banner" src="${g.banner}" alt="${g.title}"/>
+          <div class="detail-body">
+            <button class="btn btn-ghost btn-sm" data-page="discover">← Back</button>
+            <h1 style="margin-top:.8rem;font-size:2rem">${g.title}</h1>
+            <div class="detail-meta">
+              <span>${g.genre}</span><span>${g.status}</span><span>v${g.version}</span><span>${formatDate(g.date)}</span>
+            </div>
+            <p style="color:var(--text2);max-width:640px;line-height:1.6">${g.desc}</p>
+            <div class="detail-actions">
+              <button class="btn btn-primary btn-lg" data-launch="${g.id}">▶ Play Now</button>
+              <button class="btn btn-secondary" data-fav="${g.id}">${fav?'★ Favourited':'☆ Favourite'}</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderPlaceholder(page){
+      const meta={
+        library:{icon:'📚',title:'My Library',text:'Favourited games appear here. Use the star on a game page to add one.'},
+        recent:{icon:'🕐',title:'Recently Played',text:'Games you launch are tracked locally until accounts are ready.'},
+        profile:{icon:'👤',title:'Profile',text:'Sign in to view and customise your profile.'},
+        settings:{icon:'⚙️',title:'Settings',text:'Platform settings will arrive with authentication.'}
+      };
+      const m=meta[page]||{icon:'🚧',title:'Coming Soon',text:'Under construction.'};
+      let extra='';
+      if(page==='library'){
+        const favs=LS.get('favs',[]).map(id=>GAMES.find(g=>g.id===id)).filter(Boolean);
+        extra=favs.length?`<div class="container"><div class="game-grid">${favs.map(cardHTML).join('')}</div></div>`:`<div class="empty"><div class="icon">☆</div><h3>No favourites yet</h3></div>`;
+      }
+      if(page==='recent'){
+        const rec=LS.get('recent',[]).map(x=>GAMES.find(g=>g.id===x.id)).filter(Boolean);
+        extra=rec.length?`<div class="container"><div class="game-grid">${rec.map(cardHTML).join('')}</div></div>`:`<div class="empty"><div class="icon">🕐</div><h3>Nothing played yet</h3></div>`;
+      }
+      return `<div class="page-placeholder"><div class="icon">${m.icon}</div><h1>${m.title}</h1><p>${m.text}</p><a href="/" class="btn btn-primary" data-page="home">Home</a></div>${extra}`;
+    }
+
+    // ========== ROUTER ==========
+    let currentPage='home';
+    function navigate(page,push=true,detailId=null){
+      currentPage=page;
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+      const app=document.getElementById('app');
+      if(page==='home')app.innerHTML=renderHome();
+      else if(page==='discover')app.innerHTML=renderDiscover();
+      else if(page==='detail'&&detailId){
+        const g=GAMES.find(x=>x.id===detailId);
+        app.innerHTML=g?renderDetail(g):renderPlaceholder('discover');
+      }
+      else if(page==='profile'){ ProfilePage.render(app); }
+      else app.innerHTML=renderPlaceholder(page);
+      bindApp();
+      if(push){
+        const path=page==='home'?'/':page==='detail'?`/discover`:`/${page}`;
+        history.pushState({page,detailId},'',path);
+      }
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function bindApp(){
+      const app=document.getElementById('app');
+      app.querySelectorAll('.game-card').forEach(c=>{
+        c.onclick=()=>navigate('detail',true,c.dataset.id);
+      });
+      app.querySelectorAll('[data-launch]').forEach(b=>{
+        b.onclick=e=>{e.stopPropagation();const g=GAMES.find(x=>x.id===b.dataset.launch);if(g)launchGame(g);};
+      });
+      app.querySelectorAll('[data-detail]').forEach(b=>{
+        b.onclick=()=>navigate('detail',true,b.dataset.detail);
+      });
+      app.querySelectorAll('[data-fav]').forEach(b=>{
+        b.onclick=()=>{const on=toggleFav(b.dataset.fav);b.textContent=on?'★ Favourited':'☆ Favourite';toast(on?'Added to favourites':'Removed from favourites');};
+      });
+      app.querySelectorAll('.cat-card').forEach(c=>{
+        c.onclick=()=>{navigate('discover');setTimeout(()=>{document.getElementById('app').innerHTML=renderDiscover(c.dataset.genre);bindApp();},10);};
+      });
+      app.querySelectorAll('#genreFilters button').forEach(btn=>{
+        btn.onclick=()=>{const g=btn.dataset.genre;document.getElementById('app').innerHTML=renderDiscover(g==='All'?null:g);bindApp();};
+      });
+    }
+
+
+    
+    // ========== PLAYER AUTH ==========
+    const Auth = {
+      user: null,
+      csrf: null,
+      mode: 'login', // login | register
+
+      async api(path, opts = {}) {
+        const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+        if (this.csrf && opts.method && opts.method !== 'GET') headers['X-CSRF-Token'] = this.csrf;
+        const res = await fetch(path, Object.assign({}, opts, { headers, credentials: 'include' }));
+        const data = await res.json().catch(() => ({}));
+        return { res, data };
+      },
+
+      async refresh() {
+        try {
+          const { res, data } = await this.api('/api/auth/me');
+          if (res.ok && data.success) {
+            this.user = data.data.user;
+            this.csrf = data.data.csrf;
+          } else {
+            this.user = null;
+            this.csrf = null;
+          }
+        } catch {
+          this.user = null;
+          this.csrf = null;
+        }
+        this.renderNav();
+      },
+
+      renderNav() {
+        const area = document.getElementById('nav-auth-area');
+        if (!area) return;
+        if (this.user) {
+          area.innerHTML = `
+            <div class="nav-user">
+              <button class="nav-user-btn" type="button" id="nav-user-btn">👤 ${this.escape(this.user.username)}</button>
+              <div class="nav-user-menu" id="nav-user-menu">
+                <button type="button" data-page="profile">Profile</button>
+                <button type="button" id="btn-logout">Log out</button>
+              </div>
+            </div>`;
+          document.getElementById('nav-user-btn').onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById('nav-user-menu').classList.toggle('open');
+          };
+          document.getElementById('btn-logout').onclick = () => this.logout();
+        } else {
+          area.innerHTML = `
+            <button class="btn btn-ghost btn-sm" type="button" id="btn-login">Log in</button>
+            <button class="btn btn-primary btn-sm" type="button" id="btn-signup">Sign up</button>`;
+          document.getElementById('btn-login').onclick = () => this.open('login');
+          document.getElementById('btn-signup').onclick = () => this.open('register');
+        }
+      },
+
+      escape(s) {
+        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      },
+
+      open(mode) {
+        this.mode = mode;
+        const ov = document.getElementById('auth-overlay');
+        const title = document.getElementById('auth-title');
+        const sub = document.getElementById('auth-sub');
+        const fields = document.getElementById('auth-fields');
+        const sw = document.getElementById('auth-switch');
+        const err = document.getElementById('auth-err');
+        err.style.display = 'none';
+        if (mode === 'login') {
+          title.textContent = 'Sign in';
+          sub.textContent = 'Welcome back to Riftted Realities';
+          fields.innerHTML = `
+            <label>Email or username</label>
+            <div class="auth-field"><input id="auth-login" autocomplete="username" /></div>
+            <label>Password</label>
+            <div class="auth-field">
+              <input id="auth-password" type="password" autocomplete="current-password" />
+              <button type="button" class="auth-toggle" data-target="auth-password">Show</button>
+            </div>`;
+          sw.innerHTML = `No account? <a id="auth-to-register">Create one</a>`;
+        } else {
+          title.textContent = 'Create account';
+          sub.textContent = 'Join Riftted Realities';
+          fields.innerHTML = `
+            <label>Username</label>
+            <div class="auth-field"><input id="auth-username" autocomplete="username" /></div>
+            <label>Email</label>
+            <div class="auth-field"><input id="auth-email" type="email" autocomplete="email" /></div>
+            <label>Password</label>
+            <div class="auth-field">
+              <input id="auth-password" type="password" autocomplete="new-password" />
+              <button type="button" class="auth-toggle" data-target="auth-password">Show</button>
+            </div>
+            <label>Confirm password</label>
+            <div class="auth-field">
+              <input id="auth-confirm" type="password" autocomplete="new-password" />
+              <button type="button" class="auth-toggle" data-target="auth-confirm">Show</button>
+            </div>`;
+          sw.innerHTML = `Already have an account? <a id="auth-to-login">Sign in</a>`;
+        }
+        ov.classList.add('open');
+        fields.querySelectorAll('.auth-toggle').forEach(btn => {
+          btn.onclick = () => {
+            const inp = document.getElementById(btn.dataset.target);
+            if (!inp) return;
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+          };
+        });
+        const toReg = document.getElementById('auth-to-register');
+        const toLog = document.getElementById('auth-to-login');
+        if (toReg) toReg.onclick = () => this.open('register');
+        if (toLog) toLog.onclick = () => this.open('login');
+      },
+
+      close() {
+        document.getElementById('auth-overlay').classList.remove('open');
+      },
+
+      async submit() {
+        const err = document.getElementById('auth-err');
+        err.style.display = 'none';
+        const submitBtn = document.getElementById('auth-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Please wait…';
+        try {
+          if (this.mode === 'login') {
+            const login = document.getElementById('auth-login').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const { res, data } = await this.api('/api/auth/login', {
+              method: 'POST',
+              body: JSON.stringify({ login, password })
+            });
+            if (!res.ok || !data.success) throw new Error(data.error || 'Login failed');
+            this.user = data.data.user;
+            this.csrf = data.data.csrf;
+            this.close();
+            this.renderNav();
+            toast('Welcome back, ' + this.user.username);
+          } else {
+            const username = document.getElementById('auth-username').value.trim();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const confirmPassword = document.getElementById('auth-confirm').value;
+            const { res, data } = await this.api('/api/auth/register', {
+              method: 'POST',
+              body: JSON.stringify({ username, email, password, confirmPassword })
+            });
+            if (!res.ok || !data.success) throw new Error(data.error || 'Registration failed');
+            this.user = data.data.user;
+            this.csrf = data.data.csrf;
+            this.close();
+            this.renderNav();
+            toast('Account created — welcome, ' + this.user.username);
+          }
+        } catch (e) {
+          err.textContent = e.message;
+          err.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Continue';
+        }
+      },
+
+      async logout() {
+        try { await this.api('/api/auth/logout', { method: 'POST', body: '{}' }); } catch {}
+        this.user = null;
+        this.csrf = null;
+        this.renderNav();
+        toast('Signed out');
+      },
+
+      bind() {
+        document.getElementById('auth-cancel').onclick = () => this.close();
+        document.getElementById('auth-submit').onclick = () => this.submit();
+        document.getElementById('auth-overlay').addEventListener('click', e => {
+          if (e.target.id === 'auth-overlay') this.close();
+        });
+        document.addEventListener('click', () => {
+          document.getElementById('nav-user-menu')?.classList.remove('open');
+        });
+        const login = document.getElementById('btn-login');
+        const signup = document.getElementById('btn-signup');
+        if (login) login.onclick = () => this.open('login');
+        if (signup) signup.onclick = () => this.open('register');
+      }
+    };
+
+
+    
+    // ========== PROFILE PAGE ==========
+    const ProfilePage = {
+      avatars: [],
+      draft: null,
+
+      async loadAvatars() {
+        if (this.avatars.length) return this.avatars;
+        try {
+          const res = await fetch('/api/profile/avatars');
+          const data = await res.json();
+          if (data.success) this.avatars = data.data;
+        } catch {}
+        return this.avatars;
+      },
+
+      async render(container) {
+        if (!Auth.user) {
+          container.innerHTML = `
+            <div class="page-placeholder">
+              <div class="icon">👤</div>
+              <h1>Your profile</h1>
+              <p>Sign in to view and customise your player profile.</p>
+              <button class="btn btn-primary" type="button" id="profile-signin">Sign in</button>
+            </div>`;
+          document.getElementById('profile-signin').onclick = () => Auth.open('login');
+          return;
+        }
+
+        container.innerHTML = `<div class="profile-wrap"><div style="color:var(--text2)">Loading profile…</div></div>`;
+        await this.loadAvatars();
+
+        const { res, data } = await Auth.api('/api/profile/me');
+        if (!res.ok || !data.success) {
+          container.innerHTML = `<div class="page-placeholder"><h1>Couldn’t load profile</h1><p>${(data && data.error) || 'Error'}</p></div>`;
+          return;
+        }
+        const p = data.data.profile;
+        const settings = data.data.settings;
+        if (data.data.csrf) Auth.csrf = data.data.csrf;
+        this.draft = {
+          displayName: p.displayName,
+          bio: p.bio || '',
+          avatarId: p.avatarId,
+          accentColor: p.accentColor || '#a855f7',
+          profilePublic: settings.profilePublic !== false
+        };
+
+        const avatarEmoji = (this.avatars.find(a => a.id === this.draft.avatarId) || {}).emoji || '🟣';
+        const accents = ['#a855f7','#22d3ee','#f43f5e','#f59e0b','#34d399','#818cf8','#fb7185','#e2e8f0'];
+
+        container.innerHTML = `
+          <div class="profile-wrap">
+            <div class="profile-hero" style="border-color:${this.draft.accentColor}55">
+              <div class="profile-avatar" id="profile-avatar-preview" style="border-color:${this.draft.accentColor}">${avatarEmoji}</div>
+              <div class="profile-meta">
+                <h1 id="profile-display-preview">${this.esc(this.draft.displayName)}</h1>
+                <div class="uname">@${this.esc(p.username)}</div>
+                <p class="profile-bio" id="profile-bio-preview">${this.esc(this.draft.bio) || 'No bio yet.'}</p>
+                <div style="margin-top:.6rem;font-size:.8rem;color:var(--muted)">Joined ${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</div>
+              </div>
+            </div>
+
+            <div class="profile-stats">
+              <div class="profile-stat"><div class="n">${p.stats?.gamesPlayed ?? 0}</div><div class="l">Games played</div></div>
+              <div class="profile-stat"><div class="n">${(p.favourites||[]).length}</div><div class="l">Favourites</div></div>
+              <div class="profile-stat"><div class="n">${(p.recentlyPlayed||[]).length}</div><div class="l">Recent</div></div>
+            </div>
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">${p.stats?.note || ''}</p>
+
+            <div class="profile-edit">
+              <h3 style="margin-bottom:.4rem">Customise profile</h3>
+              <label>Display name</label>
+              <input id="pf-display" value="${this.escAttr(this.draft.displayName)}" maxlength="32" />
+              <label>Bio</label>
+              <textarea id="pf-bio" maxlength="280">${this.esc(this.draft.bio)}</textarea>
+              <label>Avatar</label>
+              <div class="avatar-grid" id="pf-avatars">
+                ${this.avatars.map(a => `
+                  <button type="button" class="avatar-opt ${a.id===this.draft.avatarId?'selected':''}" data-av="${a.id}" title="${this.escAttr(a.label)}">${a.emoji}</button>
+                `).join('')}
+              </div>
+              <label>Accent colour</label>
+              <div class="color-row" id="pf-colors">
+                ${accents.map(col => `
+                  <button type="button" class="color-swatch ${col.toLowerCase()===this.draft.accentColor.toLowerCase()?'selected':''}" data-color="${col}" style="background:${col}"></button>
+                `).join('')}
+              </div>
+              <label style="display:flex;align-items:center;gap:.5rem;margin-top:1rem;cursor:pointer">
+                <input type="checkbox" id="pf-public" ${this.draft.profilePublic?'checked':''} />
+                Public profile (others can view your page)
+              </label>
+              <div class="profile-actions">
+                <button class="btn btn-primary" type="button" id="pf-save">Save profile</button>
+                <span id="pf-msg" style="font-size:.85rem;color:var(--text2)"></span>
+              </div>
+            </div>
+          </div>`;
+
+        // live preview
+        const syncPreview = () => {
+          document.getElementById('profile-display-preview').textContent = document.getElementById('pf-display').value || p.username;
+          document.getElementById('profile-bio-preview').textContent = document.getElementById('pf-bio').value || 'No bio yet.';
+          const av = this.avatars.find(a => a.id === this.draft.avatarId);
+          document.getElementById('profile-avatar-preview').textContent = av ? av.emoji : '🟣';
+          document.getElementById('profile-avatar-preview').style.borderColor = this.draft.accentColor;
+        };
+        document.getElementById('pf-display').oninput = syncPreview;
+        document.getElementById('pf-bio').oninput = syncPreview;
+        document.querySelectorAll('#pf-avatars .avatar-opt').forEach(btn => {
+          btn.onclick = () => {
+            this.draft.avatarId = btn.dataset.av;
+            document.querySelectorAll('#pf-avatars .avatar-opt').forEach(b => b.classList.toggle('selected', b.dataset.av === this.draft.avatarId));
+            syncPreview();
+          };
+        });
+        document.querySelectorAll('#pf-colors .color-swatch').forEach(btn => {
+          btn.onclick = () => {
+            this.draft.accentColor = btn.dataset.color;
+            document.querySelectorAll('#pf-colors .color-swatch').forEach(b => b.classList.toggle('selected', b.dataset.color === this.draft.accentColor));
+            syncPreview();
+          };
+        });
+
+        document.getElementById('pf-save').onclick = async () => {
+          const msg = document.getElementById('pf-msg');
+          msg.textContent = 'Saving…';
+          const displayName = document.getElementById('pf-display').value.trim();
+          const bio = document.getElementById('pf-bio').value;
+          const profilePublic = document.getElementById('pf-public').checked;
+          try {
+            const up = await Auth.api('/api/profile/me', {
+              method: 'PUT',
+              body: JSON.stringify({
+                displayName,
+                bio,
+                avatarId: this.draft.avatarId,
+                accentColor: this.draft.accentColor
+              })
+            });
+            if (!up.res.ok || !up.data.success) throw new Error(up.data.error || 'Save failed');
+            const st = await Auth.api('/api/profile/settings', {
+              method: 'PUT',
+              body: JSON.stringify({ profilePublic })
+            });
+            if (!st.res.ok || !st.data.success) throw new Error(st.data.error || 'Settings failed');
+            msg.textContent = 'Saved';
+            msg.style.color = '#34d399';
+            toast('Profile updated');
+            // refresh nav name if display changed
+            Auth.refresh();
+          } catch (e) {
+            msg.textContent = e.message;
+            msg.style.color = '#f87171';
+          }
+        };
+      },
+
+      esc(s) {
+        return String(s || '').replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
+      },
+      escAttr(s) {
+        return String(s || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+      }
+    };
+
+
+    // ========== ADMIN PORTAL ==========
+    const AdminApp = {
+      csrf: null,
+      admin: null,
+      section: 'overview',
+
+      async api(path, opts = {}) {
+        const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+        if (this.csrf && opts.method && opts.method !== 'GET') headers['X-CSRF-Token'] = this.csrf;
+        const res = await fetch(path, Object.assign({}, opts, { headers, credentials: 'include' }));
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) { this.admin = null; this.showLogin(); throw new Error('Unauthorized'); }
+        return { res, data };
+      },
+
+      boot() {
+        document.body.innerHTML = '<div id="admin-mount"></div>';
+        document.title = 'Admin · Riftted Realities';
+        this.checkSession();
+      },
+
+      async checkSession() {
+        try {
+          const { res, data } = await this.api('/api/admin/me');
+          if (res.ok && data.success) {
+            this.admin = data.data.admin;
+            this.csrf = data.data.csrf;
+            this.renderShell();
+            this.navigate('overview');
+          } else this.showLogin();
+        } catch { this.showLogin(); }
+      },
+
+      showLogin() {
+        document.getElementById('admin-mount').innerHTML = `
+          <div class="admin-login">
+            <div class="admin-login-box">
+              <h1>Admin Portal</h1>
+              <p>Riftted Realities · Restricted access</p>
+              <div class="admin-err" id="admin-err"></div>
+              <label>Email</label>
+              <input type="email" id="admin-email" autocomplete="username" value="admin@riftted.local" />
+              <label>Password</label>
+              <input type="password" id="admin-pass" autocomplete="current-password" />
+              <button class="admin-btn" id="admin-login-btn">Sign in</button>
+              <p style="margin-top:1rem;font-size:0.75rem;color:#64748b">Default local: admin@riftted.local · ChangeMeNow!123</p>
+            </div>
+          </div>`;
+        document.getElementById('admin-login-btn').onclick = () => this.login();
+        document.getElementById('admin-pass').onkeydown = e => { if (e.key === 'Enter') this.login(); };
+      },
+
+      async login() {
+        const email = document.getElementById('admin-email').value.trim();
+        const password = document.getElementById('admin-pass').value;
+        const err = document.getElementById('admin-err');
+        err.style.display = 'none';
+        try {
+          const { res, data } = await this.api('/api/admin/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+          if (!res.ok || !data.success) {
+            err.textContent = data.error || 'Login failed';
+            err.style.display = 'block';
+            return;
+          }
+          this.admin = data.data.admin;
+          this.csrf = data.data.csrf;
+          this.renderShell();
+          this.navigate('overview');
+        } catch (e) {
+          err.textContent = 'Network error';
+          err.style.display = 'block';
+        }
+      },
+
+      async logout() {
+        try { await this.api('/api/admin/logout', { method: 'POST', body: '{}' }); } catch {}
+        this.admin = null; this.csrf = null; this.showLogin();
+      },
+
+      renderShell() {
+        document.getElementById('admin-mount').innerHTML = `
+          <div class="admin-root">
+            <aside class="admin-side">
+              <div class="admin-brand">Riftted Realities<span>Administration</span></div>
+              <nav class="admin-nav" id="admin-nav">
+                <a href="#overview" data-sec="overview" class="active">Overview</a>
+                <a href="#requests" data-sec="requests">Requests</a>
+                <a href="#games" data-sec="games">Game Library</a>
+                <a href="#submissions" data-sec="submissions">Game Submissions</a>
+                <a href="#players" data-sec="players">Players</a>
+                <a href="#reports" data-sec="reports">Reports</a>
+                <a href="#announcements" data-sec="announcements">Announcements</a>
+                <a href="#activity" data-sec="activity">Activity Logs</a>
+                <a href="#settings" data-sec="settings">Settings</a>
+              </nav>
+              <div class="admin-side-foot">
+                <div style="color:#94a3b8;margin-bottom:0.4rem">${this.admin.displayName || this.admin.email}</div>
+                <button class="btn btn-ghost btn-sm" id="admin-logout" style="color:#f87171">Log out</button>
+              </div>
+            </aside>
+            <div class="admin-main">
+              <div class="admin-top">
+                <div id="admin-title" style="font-weight:600">Overview</div>
+                <a href="/" style="font-size:0.85rem;color:#94a3b8">← Public site</a>
+              </div>
+              <div class="admin-content" id="admin-content"></div>
+            </div>
+          </div>`;
+        document.getElementById('admin-logout').onclick = () => this.logout();
+        document.querySelectorAll('#admin-nav a').forEach(a => {
+          a.onclick = e => { e.preventDefault(); this.navigate(a.dataset.sec); };
+        });
+      },
+
+      setNav(sec) {
+        document.querySelectorAll('#admin-nav a').forEach(a => a.classList.toggle('active', a.dataset.sec === sec));
+        const titles = { overview:'Overview', requests:'Requests', games:'Game Library', submissions:'Game Submissions', players:'Players', reports:'Reports', announcements:'Announcements', activity:'Activity Logs', settings:'Settings' };
+        const t = document.getElementById('admin-title');
+        if (t) t.textContent = titles[sec] || sec;
+      },
+
+      async navigate(sec) {
+        this.section = sec;
+        this.setNav(sec);
+        const el = document.getElementById('admin-content');
+        if (!el) return;
+        el.innerHTML = '<div style="color:#64748b">Loading…</div>';
+        try {
+          if (sec === 'overview') await this.viewOverview(el);
+          else if (sec === 'requests') await this.viewRequests(el);
+          else if (sec === 'games') await this.viewGames(el);
+          else if (sec === 'submissions') el.innerHTML = '<div class="admin-panel"><h3>Game Submissions</h3><p style="color:#94a3b8">Pipeline for community game packs. Wire to storage when submission uploads are enabled.</p></div>';
+          else if (sec === 'players') await this.viewPlayers(el);
+          else if (sec === 'reports') el.innerHTML = '<div class="admin-panel"><h3>Reports</h3><p style="color:#94a3b8">Moderation reports will appear here.</p></div>';
+          else if (sec === 'announcements') await this.viewAnnouncements(el);
+          else if (sec === 'activity') await this.viewActivity(el);
+          else if (sec === 'settings') el.innerHTML = `<div class="admin-panel"><h3>Settings</h3><p style="color:#94a3b8">Signed in as <strong>${this.admin.email}</strong></p><p style="color:#64748b;margin-top:0.5rem;font-size:0.85rem">Sessions use HTTP-only cookies · CSRF on mutations · Rate-limited login</p></div>`;
+        } catch (e) {
+          el.innerHTML = `<div class="admin-err" style="display:block">${e.message}</div>`;
+        }
+      },
+
+      async viewOverview(el) {
+        const { data } = await this.api('/api/admin/dashboard');
+        const s = data.data.stats;
+        el.innerHTML = `
+          <div class="admin-cards">
+            <div class="admin-card"><div class="n">${s.games}</div><div class="l">Games</div></div>
+            <div class="admin-card"><div class="n">${s.published}</div><div class="l">Published</div></div>
+            <div class="admin-card"><div class="n">${s.pendingRequests}</div><div class="l">Pending requests</div></div>
+            <div class="admin-card"><div class="n">${s.underReview}</div><div class="l">Under review</div></div>
+          </div>
+          <div class="admin-panel"><h3>Recent requests</h3>
+            <table class="admin-table"><thead><tr><th>Title</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>${(data.data.recentRequests||[]).map(r=>`<tr><td>${r.title}</td><td>${r.type}</td><td><span class="badge-st badge-${r.status}">${r.status}</span></td></tr>`).join('')||'<tr><td colspan="3">None</td></tr>'}</tbody></table>
+          </div>`;
+      },
+
+      async viewRequests(el) {
+        const { data } = await this.api('/api/admin/requests');
+        const rows = data.data || [];
+        el.innerHTML = `
+          <div class="admin-panel">
+            <h3>Inbox (${rows.length})</h3>
+            <table class="admin-table">
+              <thead><tr><th>Title</th><th>Player</th><th>Type</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                ${rows.map(r=>`<tr>
+                  <td>${r.title}</td><td>${r.playerName||'—'}</td><td>${r.type}</td>
+                  <td><span class="badge-st badge-${r.status}">${r.status}</span></td>
+                  <td><button data-rid="${r.id}" class="open-req">Open</button></td>
+                </tr>`).join('')||'<tr><td colspan="5">No requests</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+          <div id="req-detail"></div>`;
+        el.querySelectorAll('.open-req').forEach(b => b.onclick = () => this.openRequest(b.dataset.rid));
+      },
+
+      async openRequest(id) {
+        const box = document.getElementById('req-detail');
+        const { data } = await this.api('/api/admin/requests/' + id);
+        const r = data.data;
+        box.innerHTML = `
+          <div class="admin-panel">
+            <h3>${r.title}</h3>
+            <p style="color:#94a3b8;font-size:0.9rem;margin:0.5rem 0">${r.description}</p>
+            <div style="font-size:0.8rem;color:#64748b">${r.type} · ${r.playerName} · ${r.status}</div>
+            <div class="admin-actions">
+              <select id="req-status">
+                ${['pending','under_review','approved','rejected','completed'].map(s=>`<option value="${s}" ${s===r.status?'selected':''}>${s}</option>`).join('')}
+              </select>
+              <button class="primary" id="req-save">Update status</button>
+            </div>
+            <h3 style="margin-top:1.2rem">Private notes</h3>
+            ${(r.notes||[]).map(n=>`<div class="admin-note">${n.body}<div style="font-size:0.7rem;margin-top:0.3rem">${n.createdAt}</div></div>`).join('')||'<p style="color:#64748b;font-size:0.85rem">No notes yet</p>'}
+            <textarea class="admin-ta" id="req-note" placeholder="Add private admin note…"></textarea>
+            <div class="admin-actions"><button class="primary" id="req-add-note">Add note</button></div>
+          </div>`;
+        document.getElementById('req-save').onclick = async () => {
+          const status = document.getElementById('req-status').value;
+          await this.api('/api/admin/requests/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
+          this.openRequest(id);
+        };
+        document.getElementById('req-add-note').onclick = async () => {
+          const body = document.getElementById('req-note').value.trim();
+          if (!body) return;
+          await this.api('/api/admin/requests/' + id + '/notes', { method: 'POST', body: JSON.stringify({ body }) });
+          this.openRequest(id);
+        };
+      },
+
+      async viewGames(el) {
+        const { data } = await this.api('/api/admin/games');
+        const games = data.data || [];
+        el.innerHTML = `<div class="admin-panel"><h3>Library</h3>
+          <table class="admin-table"><thead><tr><th>Title</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead>
+          <tbody>${games.map(g=>`<tr>
+            <td><strong>${g.title}</strong><div style="font-size:0.75rem;color:#64748b">${g.id}</div></td>
+            <td>${g.status}</td>
+            <td>${g.published ? 'Yes' : 'No'}</td>
+            <td class="admin-actions">
+              <button data-pub="${g.id}" class="primary g-pub">Publish</button>
+              <button data-unpub="${g.id}" class="g-unpub">Unpublish</button>
+              <button data-arch="${g.id}" class="g-arch">Archive</button>
+            </td>
+          </tr>`).join('')}</tbody></table>
+          <p style="margin-top:0.8rem;font-size:0.8rem;color:#64748b">Publish validates that the game launch file exists under /games. Game files are never deleted by admin actions.</p>
+        </div>`;
+        el.querySelectorAll('.g-pub').forEach(b => b.onclick = async () => {
+          const { res, data } = await this.api('/api/admin/games/' + b.dataset.pub + '/publish', { method: 'POST', body: '{}' });
+          if (!res.ok) alert(data.error || 'Failed'); else this.viewGames(el);
+        });
+        el.querySelectorAll('.g-unpub').forEach(b => b.onclick = async () => {
+          await this.api('/api/admin/games/' + b.dataset.unpub + '/unpublish', { method: 'POST', body: '{}' });
+          this.viewGames(el);
+        });
+        el.querySelectorAll('.g-arch').forEach(b => b.onclick = async () => {
+          if (!confirm('Archive this listing? Files are not deleted.')) return;
+          await this.api('/api/admin/games/' + b.dataset.arch + '/archive', { method: 'POST', body: '{}' });
+          this.viewGames(el);
+        });
+      },
+
+      async viewPlayers(el) {
+        const { data } = await this.api('/api/admin/players');
+        el.innerHTML = `<div class="admin-panel"><h3>Players</h3><p style="color:#94a3b8">${data.message || 'No players yet.'}</p></div>`;
+      },
+
+      async viewAnnouncements(el) {
+        const { data } = await this.api('/api/admin/announcements');
+        el.innerHTML = `
+          <div class="admin-panel">
+            <h3>Create announcement</h3>
+            <input id="ann-title" placeholder="Title" style="width:100%;padding:0.6rem;margin-bottom:0.5rem;background:#0c0c14;border:1px solid #1e1e2e;border-radius:8px;color:#fff" />
+            <textarea class="admin-ta" id="ann-body" placeholder="Body"></textarea>
+            <div class="admin-actions"><button class="primary" id="ann-save">Publish draft</button></div>
+          </div>
+          <div class="admin-panel"><h3>Existing</h3>
+            ${(data.data||[]).map(a=>`<div class="admin-note"><strong>${a.title}</strong><div>${a.body}</div></div>`).join('')||'<p style="color:#64748b">None yet</p>'}
+          </div>`;
+        document.getElementById('ann-save').onclick = async () => {
+          const title = document.getElementById('ann-title').value.trim();
+          const body = document.getElementById('ann-body').value.trim();
+          if (!title || !body) return;
+          await this.api('/api/admin/announcements', { method: 'POST', body: JSON.stringify({ title, body, published: true }) });
+          this.viewAnnouncements(el);
+        };
+      },
+
+      async viewActivity(el) {
+        const { data } = await this.api('/api/admin/activity');
+        el.innerHTML = `<div class="admin-panel"><h3>Activity</h3>
+          <table class="admin-table"><thead><tr><th>When</th><th>Action</th><th>Meta</th></tr></thead>
+          <tbody>${(data.data||[]).map(a=>`<tr><td style="white-space:nowrap">${a.createdAt}</td><td>${a.action}</td><td style="font-size:0.75rem;color:#64748b">${JSON.stringify(a.meta||{})}</td></tr>`).join('')||'<tr><td colspan="3">No activity</td></tr>'}</tbody></table>
+        </div>`;
+      }
+    };
+
+
+    // init
+    document.addEventListener('DOMContentLoaded',()=>{
+      const path=location.pathname.replace(/\/$/, '') || '/';
+      if (path === '/admin' || path.startsWith('/admin/')) {
+        AdminApp.boot();
+        return;
+      }
+      setTimeout(()=>document.getElementById('loading').classList.add('hidden'),450);
+      Auth.bind();
+      Auth.refresh();
+      document.getElementById('menuBtn').onclick=()=>document.getElementById('mobileNav').classList.toggle('open');
+      document.addEventListener('click',e=>{
+        const link=e.target.closest('[data-page]');
+        if(link&&!link.dataset.launch){e.preventDefault();document.getElementById('mobileNav').classList.remove('open');navigate(link.dataset.page);}
+      });
+      let st;
+      document.getElementById('search').oninput=e=>{
+        clearTimeout(st);st=setTimeout(()=>{
+          const q=e.target.value.trim();
+          navigate('discover',false);
+          document.getElementById('app').innerHTML=renderDiscover(null,q);
+          bindApp();
+        },180);
+      };
+      const map={'/':'home','/discover':'discover','/library':'library','/recent':'recent','/profile':'profile','/settings':'settings'};
+      navigate(map[path]||'home',false);
+      window.addEventListener('popstate',e=>navigate((e.state&&e.state.page)||'home',false,e.state&&e.state.detailId));
+    });
+  </script>
+</body>
+</html>

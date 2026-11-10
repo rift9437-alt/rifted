@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Relicbound</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0610;font-family:system-ui,sans-serif;color:#f1e8ff}
+canvas{display:block;position:fixed;inset:0}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:5}
+#stats{position:absolute;top:14px;left:18px;font-size:13px;line-height:1.6;color:#d8b4fe}
+#msg{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;text-shadow:0 0 18px #a855f7;display:none;text-align:center}
+#pause{position:fixed;inset:0;background:rgba(10,6,16,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:10}
+#pause h2{color:#a855f7;letter-spacing:3px}
+#pause button{pointer-events:auto;padding:10px 22px;background:#a855f7;color:#0a0610;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+#start{position:fixed;inset:0;background:radial-gradient(ellipse,#1a0a2e,#0a0610);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:20;cursor:pointer}
+#start h1{font-size:34px;letter-spacing:5px;color:#a855f7;text-shadow:0 0 28px rgba(168,85,247,.5)}
+#start p{color:#94a3b8;font-size:14px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud"><div id="stats"></div><div id="msg"></div></div>
+<div id="pause"><h2>PAUSED</h2><button id="res">Resume</button><button id="rst">Restart</button></div>
+<div id="start"><h1>RELICBOUND</h1><p>WASD move · SPACE / Click attack · ESC pause</p><p style="color:#a855f7;margin-top:14px">Click to start</p></div>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H,running=false,paused=false,room=1,score=0;
+const keys={},TILE=48;
+const player={x:0,y:0,hp:100,maxHp:100,dmg:12,cooldown:0,facing:0,relics:0,weapon:'Sword'};
+let enemies=[],pickups=[],walls=[],particles=[];
+
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+addEventListener('resize',resize);resize();
+addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='Escape'||e.code==='KeyP')togglePause();});
+addEventListener('keyup',e=>keys[e.code]=false);
+addEventListener('mousedown',()=>{if(running&&!paused)attack();});
+document.getElementById('start').onclick=()=>{document.getElementById('start').style.display='none';running=true;startRun();};
+document.getElementById('res').onclick=()=>togglePause();
+document.getElementById('rst').onclick=()=>{togglePause();startRun();};
+
+function togglePause(){if(!running)return;paused=!paused;document.getElementById('pause').style.display=paused?'flex':'none';}
+function flash(t){const m=document.getElementById('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',1100);}
+function hud(){document.getElementById('stats').innerHTML=`HP ${Math.max(0,Math.round(player.hp))}/${player.maxHp}<br>Room ${room} · Score ${score}<br>${player.weapon} · Relics ${player.relics}`;}
+
+function startRun(){room=1;score=0;player.hp=100;player.maxHp=100;player.dmg=12;player.relics=0;player.weapon='Sword';player.cooldown=0;buildRoom();hud();}
+
+function buildRoom(){
+  walls=[];enemies=[];pickups=[];particles=[];
+  const cols=Math.floor(W/TILE),rows=Math.floor(H/TILE);
+  player.x=(cols/2)*TILE;player.y=(rows/2)*TILE;
+  // border walls
+  for(let x=0;x<cols;x++){walls.push({x:x*TILE,y:0,w:TILE,h:TILE});walls.push({x:x*TILE,y:(rows-1)*TILE,w:TILE,h:TILE});}
+  for(let y=1;y<rows-1;y++){walls.push({x:0,y:y*TILE,w:TILE,h:TILE});walls.push({x:(cols-1)*TILE,y:y*TILE,w:TILE,h:TILE});}
+  // pillars
+  const n=3+room;
+  for(let i=0;i<n;i++){
+    const cx=2+Math.floor(Math.random()*(cols-4)),cy=2+Math.floor(Math.random()*(rows-4));
+    if(Math.abs(cx-cols/2)<2&&Math.abs(cy-rows/2)<2)continue;
+    walls.push({x:cx*TILE,y:cy*TILE,w:TILE,h:TILE});
+  }
+  // enemies
+  const en=2+room;
+  for(let i=0;i<en;i++){
+    let ex,ey,ok=false,tries=0;
+    while(!ok&&tries++<40){
+      ex=(2+Math.random()*(cols-4))*TILE;ey=(2+Math.random()*(rows-4))*TILE;
+      ok=Math.hypot(ex-player.x,ey-player.y)>120&&!walls.some(w=>ex<w.x+w.w&&ex+28>w.x&&ey<w.y+w.h&&ey+28>w.y);
+    }
+    enemies.push({x:ex,y:ey,hp:8+room*3,r:14,spd:40+room*3,type:Math.random()>0.75?1:0,flash:0});
+  }
+  // pickups
+  if(Math.random()>0.4)pickups.push({x:(3+Math.random()*(cols-6))*TILE,y:(3+Math.random()*(rows-6))*TILE,type:'heart'});
+  if(Math.random()>0.55)pickups.push({x:(3+Math.random()*(cols-6))*TILE,y:(3+Math.random()*(rows-6))*TILE,type:'weapon'});
+  if(Math.random()>0.65)pickups.push({x:(3+Math.random()*(cols-6))*TILE,y:(3+Math.random()*(rows-6))*TILE,type:'relic'});
+  // exit door (top center)
+  pickups.push({x:(cols/2)*TILE,y:TILE*1.2,type:'exit'});
+  flash(`ROOM ${room}`);
+}
+
+function collides(x,y,r){
+  for(const w of walls)if(x+r>w.x&&x-r<w.x+w.w&&y+r>w.y&&y-r<w.y+w.h)return true;
+  return false;
+}
+
+function attack(){
+  if(player.cooldown>0)return;player.cooldown=0.35;
+  const range=42,a=player.facing;
+  const ax=player.x+Math.cos(a)*range,ay=player.y+Math.sin(a)*range;
+  for(let i=enemies.length-1;i>=0;i--){
+    const e=enemies[i];
+    if(Math.hypot(e.x-ax,e.y-ay)<e.r+18||Math.hypot(e.x-player.x,e.y-player.y)<e.r+range){
+      e.hp-=player.dmg;e.flash=0.2;
+      boom(e.x,e.y,'#c084fc');
+      if(e.hp<=0){score+=e.type?30:15;enemies.splice(i,1);hud();}
+    }
+  }
+}
+
+function boom(x,y,col){for(let i=0;i<10;i++){const a=Math.random()*6.28,s=30+Math.random()*80;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:0.35,col});}}
+
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min((now-(loop.t||now))/1000,0.05);loop.t=now;
+  if(!running||paused){draw();return;}
+
+  let mx=0,my=0;
+  if(keys['KeyW']||keys['ArrowUp'])my-=1;
+  if(keys['KeyS']||keys['ArrowDown'])my+=1;
+  if(keys['KeyA']||keys['ArrowLeft'])mx-=1;
+  if(keys['KeyD']||keys['ArrowRight'])mx+=1;
+  if(keys['Space'])attack();
+  player.cooldown=Math.max(0,player.cooldown-dt);
+  if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l;player.facing=Math.atan2(my,mx);
+    const spd=155;const nx=player.x+mx*spd*dt,ny=player.y+my*spd*dt;
+    if(!collides(nx,player.y,12))player.x=nx;
+    if(!collides(player.x,ny,12))player.y=ny;
+  }
+
+  for(const e of enemies){
+    e.flash=Math.max(0,e.flash-dt);
+    const dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;
+    const spd=e.spd;
+    let nx=e.x+(dx/d)*spd*dt,ny=e.y+(dy/d)*spd*dt;
+    if(!collides(nx,e.y,e.r))e.x=nx;
+    if(!collides(e.x,ny,e.r))e.y=ny;
+    if(d<e.r+14){player.hp-=(e.type?18:10)*dt;hud();if(player.hp<=0){player.hp=0;running=false;flash('YOU FELL');document.getElementById('start').style.display='flex';}}
+  }
+
+  for(let i=pickups.length-1;i>=0;i--){
+    const p=pickups[i];
+    if(Math.hypot(p.x-player.x,p.y-player.y)<28){
+      if(p.type==='heart'){player.hp=Math.min(player.maxHp,player.hp+30);flash('+HP');}
+      else if(p.type==='weapon'){player.dmg+=6;player.weapon='Relic Blade';flash('WEAPON UP');}
+      else if(p.type==='relic'){player.relics++;player.maxHp+=15;player.hp+=15;flash('RELIC');}
+      else if(p.type==='exit'){if(enemies.length===0){room++;score+=50;buildRoom();}else flash('Clear enemies first');continue;}
+      pickups.splice(i,1);hud();
+    }
+  }
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1);}
+  draw();
+}
+
+function draw(){
+  ctx.fillStyle='#0a0610';ctx.fillRect(0,0,W,H);
+  // floor grid
+  ctx.strokeStyle='#1a1028';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=TILE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=TILE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // walls
+  for(const w of walls){ctx.fillStyle='#2a1a3a';ctx.fillRect(w.x,w.y,w.w,w.h);ctx.strokeStyle='#4a3060';ctx.strokeRect(w.x+1,w.y+1,w.w-2,w.h-2);}
+  // pickups
+  for(const p of pickups){
+    if(p.type==='exit'){ctx.fillStyle=enemies.length?'#444':'#34d399';ctx.beginPath();ctx.arc(p.x,p.y,16,0,6.28);ctx.fill();ctx.fillStyle='#0a0610';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('EXIT',p.x,p.y+3);}
+    else{ctx.fillStyle=p.type==='heart'?'#f43f5e':p.type==='weapon'?'#fbbf24':'#a855f7';ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(p.x,p.y,10,0,6.28);ctx.fill();ctx.shadowBlur=0;}
+  }
+  // enemies
+  for(const e of enemies){
+    ctx.fillStyle=e.flash>0?'#fff':(e.type?'#7c3aed':'#e11d48');
+    ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,6.28);ctx.fill();ctx.shadowBlur=0;
+  }
+  // particles
+  for(const p of particles){ctx.globalAlpha=p.life*2;ctx.fillStyle=p.col;ctx.fillRect(p.x,p.y,3,3);}
+  ctx.globalAlpha=1;
+  // player
+  ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.facing);
+  ctx.fillStyle='#c084fc';ctx.shadowColor='#a855f7';ctx.shadowBlur=14;
+  ctx.beginPath();ctx.arc(0,0,13,0,6.28);ctx.fill();
+  ctx.fillStyle='#e9d5ff';ctx.fillRect(8,-3,16,6);
+  ctx.restore();ctx.shadowBlur=0;
+  // attack flash
+  if(player.cooldown>0.25){
+    ctx.strokeStyle='rgba(192,132,252,0.5)';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(player.x,player.y,40,player.facing-0.6,player.facing+0.6);ctx.stroke();
+  }
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
